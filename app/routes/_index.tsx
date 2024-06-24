@@ -1,48 +1,69 @@
-import type { MetaFunction } from "@remix-run/node";
+import { json } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
+import axios from 'axios';
+import { addToCart } from '~/slices/cartSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import type { MetaFunction } from '@remix-run/node';
+type ResponseData = {
+  id: number;
+  title: string;
+  price: string;
+  category: string;
+  description: string;
+  image: string;
+};
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: 'New Remix App' },
+    { name: 'description', content: 'Welcome to Remix!' },
   ];
 };
 
+export const loader = async () => {
+  try {
+    const response = await axios.get('https://fakestoreapi.com/products');
+    return json({ data: response.data });
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export default function Index() {
+  const { data }: { data: ResponseData[] } = useLoaderData();
+  const dispatch = useDispatch();
+  const store = useSelector((state) => state.cart);
+  console.log(store);
   return (
-    <div className="font-sans p-4">
-      <h1 className="text-3xl">Welcome to Remix</h1>
-      <ul className="list-disc mt-4 pl-6 space-y-2">
-        <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/start/quickstart"
-            rel="noreferrer"
-          >
-            5m Quick Start
-          </a>
-        </li>
-        <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/start/tutorial"
-            rel="noreferrer"
-          >
-            30m Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            className="text-blue-700 underline visited:text-purple-900"
-            target="_blank"
-            href="https://remix.run/docs"
-            rel="noreferrer"
-          >
-            Remix Docs
-          </a>
-        </li>
-      </ul>
+    <div className="font-sans index-grid">
+      {data.map(
+        ({ id, title, price, category, description, rating, image }) => (
+          <article className="border  rounded-md p-5" key={id}>
+            <div className="w-full  relative h-[40vh]">
+              <img
+                className="object-cover absolute aspect-auto  w-full h-full bg-orange-500 block "
+                src={image}
+                alt="product"
+              ></img>
+            </div>
+            <div className="flex m-2 flex-col gap-5">
+              <p className=" max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis">
+                {title}
+              </p>
+              <div className="flex gap-10 ">
+                <p>${price}</p>
+                <button
+                  onClick={() => dispatch(addToCart())}
+                  className="border px-2 py-1 rounded-md"
+                >
+                  Add to cart
+                </button>
+              </div>
+            </div>
+          </article>
+        )
+      )}
     </div>
   );
 }
