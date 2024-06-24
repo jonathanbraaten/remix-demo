@@ -11,7 +11,7 @@ interface CartState {
 }
 
 export interface RootState {
-  cart:CartState
+  cart: CartState;
 }
 let isStorageItems;
 let isQuantity: number = 0;
@@ -33,7 +33,7 @@ export const cartSlice = createSlice({
         id: action.payload.id,
         title: action.payload.title,
       };
-      state.items.push(item);
+      state.items = [...state.items, item];
       localStorage.setItem('cart', JSON.stringify(state.items));
       state.quantity = state.items.length;
       localStorage.setItem('quantity', JSON.stringify(state.quantity));
