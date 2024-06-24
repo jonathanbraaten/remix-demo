@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 const initialState = {
-  items: [],
+  items: [], //prefilled
+  cart: [], //empty
   status: 'idle',
   error: null,
 };
@@ -15,7 +16,11 @@ export const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    addToCart: (state) => {},
+    addToCart: (state, action) => {
+      const productId = action.payload;
+      const productToAdd = state.items.find((item) => item.id === productId);
+      console.log(productToAdd);
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchItems.pending, (state) => {

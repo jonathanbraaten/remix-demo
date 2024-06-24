@@ -1,9 +1,10 @@
 import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import axios from 'axios';
-import { addToCart } from '~/slices/cartSlice';
+import { addToCart, fetchItems } from '~/slices/cartSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import type { MetaFunction } from '@remix-run/node';
+import { useEffect } from 'react';
 type ResponseData = {
   id: number;
   title: string;
@@ -20,21 +21,15 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader = async () => {
-  try {
-    const response = await axios.get('https://fakestoreapi.com/products');
-    return json({ data: response.data });
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
-
 export default function Index() {
-  const { data }: { data: ResponseData[] } = useLoaderData();
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.cart);
-  console.log(store);
+  useEffect(() => {
+    dispatch(fetchItems());
+  }, []);
+  const data = useSelector((state) => state.cart.items);
+  const storage = useSelector((state) => state.cart.cart);
+  console.log(storage);
+
   return (
     <div className="font-sans index-grid">
       {data.map(
@@ -54,7 +49,7 @@ export default function Index() {
               <div className="flex gap-10 ">
                 <p>${price}</p>
                 <button
-                  onClick={() => dispatch(addToCart())}
+                  onClick={() => dispatch(addToCart(id))}
                   className="border px-2 py-1 rounded-md"
                 >
                   Add to cart
