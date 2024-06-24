@@ -3,8 +3,10 @@ import { ShoppingCart } from 'phosphor-react';
 import { useSelector } from 'react-redux';
 import { Cart } from './Cart';
 import { useState } from 'react';
+import { RootState } from '~/slices/cartSlice';
+
 export const Navigation = () => {
-  const items = useSelector((state) => state.cart.quantity);
+  const items: number = useSelector((state: RootState) => state.cart.quantity);
   const [active, setActive] = useState(false);
   const handleActive = () => setActive(true);
   const removeActive = () => setActive(false);
@@ -26,9 +28,7 @@ export const Navigation = () => {
           className={`${
             items > 0 ? 'block' : 'hidden'
           }  absolute -top-[10px] -right-[10px] bg-slate-50 w-[20px] h-[20px] text-xs rounded-full border`}
-        >
-          {items}
-        </span>
+        ></span>
         <ShoppingCart aria-label="cart icon" size={25} />
       </button>
       <Cart removeActive={removeActive} active={active} />
