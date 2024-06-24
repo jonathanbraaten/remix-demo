@@ -1,39 +1,24 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice } from '@reduxjs/toolkit';
+
 const initialState = {
-  items: [], //prefilled
-  cart: [], //empty
-  status: 'idle',
-  error: null,
+  items: [],
+  quantity: 0,
 };
-//'https://fakestoreapi.com/products
-export const fetchItems = createAsyncThunk('cart/fetchItems', async () => {
-  const response = await axios.get('https://fakestoreapi.com/products');
-  return response.data;
-});
 
 export const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
     addToCart: (state, action) => {
-      const productId = action.payload;
-      const productToAdd = state.items.find((item) => item.id === productId);
-      console.log(productToAdd);
+      const item = {
+        id: action.payload.id,
+        title: action.payload.title,
+      };
+      state.items.push(item);
+      localStorage.setItem('cart', JSON.stringify(state.items));
+      const storage = JSON.parse(localStorage.getItem('cart'));
+      state.quantity = storage.length;
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(fetchItems.pending, (state) => {
-      state.status = 'loading';
-    });
-    builder.addCase(fetchItems.fulfilled, (state, action) => {
-      state.status = 'success';
-      state.items = action.payload;
-    });
-    builder.addCase(fetchItems.rejected, (state, action) => {
-      state.status = 'failed';
-      state.error = action.error.message;
-    });
   },
 });
 

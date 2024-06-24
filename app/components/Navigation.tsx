@@ -1,9 +1,10 @@
 import { NavLink } from '@remix-run/react';
 import { ShoppingCart } from 'phosphor-react';
-
+import { useSelector } from 'react-redux';
 import { Cart } from './Cart';
 import { useState } from 'react';
 export const Navigation = () => {
+  const items = useSelector((state) => state.cart.quantity);
   const [active, setActive] = useState(false);
   const handleActive = () => setActive(true);
   const removeActive = () => setActive(false);
@@ -20,7 +21,14 @@ export const Navigation = () => {
           <NavLink to={'/'}>Contact</NavLink>
         </li>
       </ul>
-      <button onClick={handleActive}>
+      <button className="relative" onClick={handleActive}>
+        <span
+          className={`${
+            items > 0 ? 'block' : 'hidden'
+          }  absolute -top-[10px] -right-[10px] bg-slate-50 w-[20px] h-[20px] text-xs rounded-full border`}
+        >
+          {items}
+        </span>
         <ShoppingCart aria-label="cart icon" size={25} />
       </button>
       <Cart removeActive={removeActive} active={active} />

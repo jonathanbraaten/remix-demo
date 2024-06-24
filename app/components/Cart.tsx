@@ -1,4 +1,5 @@
 import { X } from 'phosphor-react';
+
 type CartProps = {
   active: boolean;
   removeActive: () => void;
