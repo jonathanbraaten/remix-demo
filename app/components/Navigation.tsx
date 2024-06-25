@@ -24,11 +24,11 @@ export const Navigation = () => {
         </li>
       </ul>
       <button className="relative" onClick={handleActive}>
-        <span
+    {/*     <span
           className={`${
             items > 0 ? 'block' : 'hidden'
           }  absolute -top-[10px] -right-[10px] bg-slate-50 w-[20px] h-[20px] text-xs rounded-full border`}
-        ></span>
+        ></span> */}
         <ShoppingCart aria-label="cart icon" size={25} />
       </button>
       <Cart removeActive={removeActive} active={active} />

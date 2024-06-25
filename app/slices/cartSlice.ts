@@ -13,7 +13,7 @@ interface CartState {
 export interface RootState {
   cart: CartState;
 }
-let isStorageItems;
+let isStorageItems: StorageItems[] = [];
 let isQuantity: number = 0;
 if (typeof window !== 'undefined') {
   isStorageItems = JSON.parse(localStorage.getItem('cart') || '[]');
@@ -34,9 +34,7 @@ export const cartSlice = createSlice({
         title: action.payload.title,
       };
       state.items = [...state.items, item];
-      localStorage.setItem('cart', JSON.stringify(state.items));
       state.quantity = state.items.length;
-      localStorage.setItem('quantity', JSON.stringify(state.quantity));
     },
   },
 });
